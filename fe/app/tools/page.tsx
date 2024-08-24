@@ -286,7 +286,7 @@ const Home: React.FC = () => {
           <div className="flex items-center justify-center gap-2 mb-2">
             <Button onClick={async () => {
               try {
-                const res = await fetch(`http://ip-api.com/json/${ip}?lang=zh-CN`);
+                const res = await fetch(`https://ip-api.com/json/${ip}?lang=zh-CN`);
                 const result = await res.json();
                 setIpResult(`${result.country} ${result.regionName} ${result.city} ${result.isp}`);
               } catch (error) {
