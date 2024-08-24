@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper as ReactSwiper, SwiperSlide } from 'swiper/react';
+import { Swiper } from 'swiper';
 import { Autoplay, Pagination, Navigation, Keyboard, Mousewheel } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -15,7 +17,8 @@ interface SwiperProps {
 }
 
 const SwiperComponent: React.FC<SwiperProps> = () => {
-  const [swiper, setSwiper] = useState<InstanceType<typeof Swiper> | null>(null);
+  // const [swiper, setSwiper] = useState<InstanceType<typeof Swiper> | null>(null);
+  const [swiper, setSwiper] = useState<Swiper | null>(null);
   const prevRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +50,7 @@ const SwiperComponent: React.FC<SwiperProps> = () => {
 
   return (
     <div className="h-full w-full">
-      <Swiper
+      <ReactSwiper
         style={{ height: '50vh', width: '100%', maxWidth: '100vw', margin: '0 auto' }}
         spaceBetween={50}
         slidesPerView={1}
@@ -105,7 +108,7 @@ const SwiperComponent: React.FC<SwiperProps> = () => {
             </div>
           </div>
         </SwiperSlide>
-      </Swiper>
+      </ReactSwiper>
     </div>
   );
 };
