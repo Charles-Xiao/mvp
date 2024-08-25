@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from "next/image"
 import { toast } from "sonner"
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -46,7 +45,7 @@ const Navbar: React.FC<NavbarProps> = () => {
       <div className="container flex flex-wrap items-center justify-between mx-auto">
         <div className="flex items-center flex-shrink-0 mr-4 text-white">
           <Link href="/" className="mr-3">
-            <Image src="/logo.svg" className="w-10 h-10" alt="logo" />
+            <img src="/logo.svg" className="w-10 h-10" alt="logo" />
           </Link>
         </div>
         <div className="md:hidden">

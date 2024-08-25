@@ -1,6 +1,5 @@
 'use client';
 
-import Image from "next/image"
 import { useState, useEffect, useRef } from 'react';
 // import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as ReactSwiper, SwiperSlide } from 'swiper/react';
@@ -68,7 +67,7 @@ const SwiperComponent: React.FC<SwiperProps> = () => {
       >
         <SwiperSlide>
           <div className="flex h-full w-full flex-col items-center justify-center">
-            <Image
+            <img
               src="https://picsum.photos/1440/900"
               alt="Slide 1"
               className="h-full w-full object-cover"
@@ -82,7 +81,7 @@ const SwiperComponent: React.FC<SwiperProps> = () => {
         </SwiperSlide>
         <SwiperSlide>
           <div className="flex h-full w-full flex-col items-center justify-center">
-            <Image
+            <img
               src="https://picsum.photos/1440/901"
               alt="Slide 2"
               className="h-full w-full object-cover"
@@ -96,7 +95,7 @@ const SwiperComponent: React.FC<SwiperProps> = () => {
         </SwiperSlide>
         <SwiperSlide>
           <div className="flex h-full w-full flex-col items-center justify-center">
-            <Image
+            <img
               src="https://picsum.photos/1440/902"
               alt="Slide 3"
               className="h-full w-full object-cover"
