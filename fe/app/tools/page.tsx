@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
+import CalculatorComponent from '../components/calculator';
 import SwiperComponent from '../components/swiper';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -82,6 +83,23 @@ const Home: React.FC = () => {
   };
   getIpAddress();
 
+  const getGeoIp = async () => {
+    try {
+      // const res = await fetch(`http://ip-api.com/json/${ip}?lang=zh-CN`);
+      const res = await fetch(`https://api.ip.sb/geoip/${ip}`);
+      const result = await res.json();
+      // setIpResult(`${result.country} ${result.regionName} ${result.city} ${result.isp}`);
+      const country = result.country ? result.country : '';
+      const region = result.region ? `, ${result.region}` : '';
+      const city = result.city ? `, ${result.city}` : '';
+      const isp = result.isp ? `, ${result.isp}` : '';
+      setIpResult(`${country}${region}${city}${isp}`);
+    } catch (error) {
+      console.error(error);
+      setIpResult('查询IP失败');
+    }
+  }
+
   return (
     <div className="bg-white min-h-screen">
       <Head>
@@ -91,8 +109,15 @@ const Home: React.FC = () => {
       <Navbar />
       <Toaster />
 
-      <div className="container mx-auto p-2 mt-16 flex flex-wrap gap-20 items-center justify-center">
-        <div className="w-1/6" >
+      <div className="flex mx-auto mt-24 items-center justify-center">
+        <Label className="mb-4 text-1.5xl">计算器</Label>
+      </div>
+      <div className="flex items-center justify-center gap-0.5 mb-2">
+        <CalculatorComponent />
+      </div>
+
+      <div className="container mx-auto p-2 mt-12 flex flex-wrap gap-20 items-center justify-center">
+        <div className="w-3/10" >
           <div className="flex items-center justify-center">
             <Label className="mb-2">当前Unix时间戳</Label>
           </div>
@@ -149,7 +174,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-1/4" >
+        <div className="w-3/10" >
           <div className="flex items-center justify-center">
             <Label className="mb-2">日期距今的天数</Label>
           </div>
@@ -263,7 +288,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-2/5" >
+        <div className="w-3/10" >
           <div className="flex items-center justify-center">
             <Label className="mb-2">IP归属地查询</Label>
           </div>
@@ -284,20 +309,13 @@ const Home: React.FC = () => {
             />
           </div>
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Button onClick={async () => {
-              try {
-                const res = await fetch(`https://ip-api.com/json/${ip}?lang=zh-CN`);
-                const result = await res.json();
-                setIpResult(`${result.country} ${result.regionName} ${result.city} ${result.isp}`);
-              } catch (error) {
-                console.error(error);
-                setIpResult('查询IP失败');
-              }
-            }} className="flex-grow">
+            <Button onClick={getGeoIp} className="flex-grow">
               点击查询
             </Button>
           </div>
         </div>
+
+
       </div>
       
       {/* <SwiperComponent /> */}
