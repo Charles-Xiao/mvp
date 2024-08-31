@@ -1,21 +1,22 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Create a Gin engine instance
 var engine = gin.New()
 
 func init() {
-	// Define your routes here
+	// url: https://mvp-be.vercel.app/hello
 	engine.GET("/hello", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Hello, Vercel!",
 		})
 	})
-
+	// url: https://mvp-be.vercel.app/greet?name=Charles
 	engine.GET("/greet", func(c *gin.Context) {
 		name := c.DefaultQuery("name", "Guest")
 		c.JSON(http.StatusOK, gin.H{
