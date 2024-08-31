@@ -1,26 +1,18 @@
 "use client"
 
-import React, { useState } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 import {LoginForm} from '../components/login';
-import 'dayjs/locale/zh-cn';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.locale('zh-cn');
+import '../utils/dayjs-config';
 
 const Home: React.FC = () => {
-
   return (
     <div className="bg-white min-h-screen">
       <Head>
-        <title>My Page Title</title>
-        <meta name="description" content="This is my page description" />
+        <title>登录 | 我的应用</title>
+        <meta name="description" content="欢迎登录我的应用，请输入您的账号和密码" />
       </Head>
       <Navbar />
       <LoginForm />
