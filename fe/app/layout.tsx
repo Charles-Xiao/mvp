@@ -1,13 +1,12 @@
 import "./globals.css";
+import AuthWrapper from './components/authwrapper/AuthWrapper';
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AuthWrapper>{children}</AuthWrapper>
+      </body>
     </html>
   );
 }

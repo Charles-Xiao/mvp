@@ -1,4 +1,9 @@
+"use client";
+
 import Link from "next/link"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import supabase from '@/app/supabase-client'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -12,6 +17,44 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export function LoginForm() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setIsLoading(true)
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) throw error
+
+      // 登录成功，重定向到首页
+      router.push('/')
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'An unknown error occurred')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    })
+
+    if (error) {
+      setError(error.message)
+    }
+  }
+
   return (
     <Card className="mx-auto max-w-sm mt-24">
       <CardHeader>
@@ -21,7 +64,7 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4">
+        <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -29,6 +72,8 @@ export function LoginForm() {
               type="email"
               placeholder="m@example.com"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="grid gap-2">
@@ -38,15 +83,22 @@ export function LoginForm() {
                 Forgot your password?
               </Link>
             </div>
-            <Input id="password" type="password" required />
+            <Input 
+              id="password" 
+              type="password" 
+              required 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
-          <Button type="submit" className="w-full rounded-md bg-blue-600 text-white hover:bg-blue-500 transition duration-300">
-            Login
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <Button type="submit" className="w-full rounded-md bg-blue-600 text-white hover:bg-blue-500 transition duration-300" disabled={isLoading}>
+            {isLoading ? 'Logging in...' : 'Login'}
           </Button>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
             Login with Google
           </Button>
-        </div>
+        </form>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}
           <Link href="/register" className="underline">

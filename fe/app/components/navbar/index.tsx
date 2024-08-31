@@ -1,15 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { toast } from "sonner"
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import { useRouter } from 'next/navigation';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import supabase from '@/app/supabase-client';
+import dayjs from '@/app/utils/dayjs-config';
 
 interface NavbarProps {
   // 在这里定义 Navbar 组件需要的属性
@@ -17,7 +13,21 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [userName, setUserName] = useState<string | null>(null); // 新增用户名状态
   const router = useRouter();
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
+      if (session) {
+        setUserName(session.user.user_metadata.username); // 设置用户名
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -40,6 +50,13 @@ const Navbar: React.FC<NavbarProps> = () => {
     })
   }
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsLoggedIn(false);
+    setUserName(null); // 登出时清除用户名
+    router.push('/');
+  }
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900 px-2 sm:px-4 py-2.5">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
@@ -56,11 +73,11 @@ const Navbar: React.FC<NavbarProps> = () => {
           >
             <span className="sr-only">Open main menu</span>
             {isOpen ? (
-              <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="block h-6 w-6" xmlns="http://www.w3.org/200/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="block h-6 w-6" xmlns="http://www.w3.org/200/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
               </svg>
             )}
@@ -157,22 +174,36 @@ const Navbar: React.FC<NavbarProps> = () => {
           </ul>
         </div>
         <div className="flex items-center ml-auto gap-5">
-          <button
-            className="px-2 py-1 rounded-md bg-gray-800 text-white hover:bg-gray-700 transition duration-300"
-            onClick={() => {
-              router.push("/register");
-            }}
-          >
-            注册
-          </button>
-          <button
-            className="px-2 py-1 rounded-md bg-blue-600 text-white hover:bg-blue-500 transition duration-300"
-            onClick={() => {
-              router.push("/login");
-            }}
-          >
-            登录
-          </button>
+          {isLoggedIn === null ? null : isLoggedIn ? (
+            <>
+              <span className="text-white mr-2">{userName ? `欢迎, ${userName}!` : '未知用户'}</span> {/* 显示用户名 */}
+              <button
+                className="px-2 py-1 rounded-md bg-red-600 text-white hover:bg-red-500 transition duration-300"
+                onClick={handleLogout}
+              >
+                登出
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="px-2 py-1 rounded-md bg-gray-800 text-white hover:bg-gray-700 transition duration-300"
+                onClick={() => {
+                  router.push("/register");
+                }}
+              >
+                注册
+              </button>
+              <button
+                className="px-2 py-1 rounded-md bg-blue-600 text-white hover:bg-blue-500 transition duration-300"
+                onClick={() => {
+                  router.push("/login");
+                }}
+              >
+                登录
+              </button>
+            </>
+          )}
           <button className="px-2 py-1 rounded-md bg-gray-800 transition duration-300 hover:bg-gray-700"
             onClick={() => {
               const root = document.documentElement;
