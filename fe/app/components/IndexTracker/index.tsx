@@ -131,7 +131,7 @@ export default function IndexTracker() {
         <div className="font-bold text-4xl mb-4">BTC实时价格</div>
         <div className="text-4xl font-bold text-blue-500 mb-8">{btcIndex !== null ? `$${btcIndex.toFixed(0)} USD` : ''}</div>
       </div>
-      <Card style={{ width: '500px', margin: '0 10px' }}> {/* Adjusted card width for more space and added margin for mobile */}
+      <Card style={{ width: '500px', margin: '20px 10px' }}> {/* Adjusted card width for more space and added margin for mobile */}
         <CardHeader className="text-center">
           <CardTitle>BTC 30 Days Price</CardTitle>
           {/* <CardDescription>January - June 2024</CardDescription> */}
@@ -190,10 +190,9 @@ export default function IndexTracker() {
         </CardFooter>
       </Card>
       <div className="flex-1 text-center md:flex-1/2">
-        <div className="font-bold text-4xl mb-4 mt-8">ETH实时价格</div>
+        <div className="font-bold text-4xl mb-4">ETH实时价格</div>
         <div className="text-4xl font-bold text-green-500 mb-8">{ethIndex !== null ? `$${ethIndex.toFixed(0)} USD` : ''}</div>
       </div>
-      
     </div>
   )
 }
