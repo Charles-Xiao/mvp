@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
-import IndexTracker from '../components/indextracker';
+import IndexTracker from '../components/IndexTracker';
 
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
