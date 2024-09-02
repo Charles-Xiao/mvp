@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
+import IndexTracker from '../components/indextracker';
 
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
@@ -99,8 +100,12 @@ const Home: React.FC = () => {
         <meta name="description" content="This is my page description" />
       </Head>
       <Navbar />
+
       <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mt-24 mb-8 text-center">最新新闻</h1>
+        <h1 className="text-4xl font-bold mt-24 mb-8 text-center">最新资讯</h1>
+      <div className="container mx-auto px-4 py-8">
+        <IndexTracker />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {newsArticles.map((article) => (
           <Article key={article.id} {...article} />

@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
-import CalculatorComponent from '../components/calculator';
-import SwiperComponent from '../components/swiper';
+import CalculatorComponent from '../components/calculator'; 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -108,7 +107,6 @@ const Home: React.FC = () => {
       </Head>
       <Navbar />
       <Toaster />
-
       <div className="flex mx-auto mt-24 items-center justify-center">
         <Label className="mb-4 text-1.5xl">计算器</Label>
       </div>

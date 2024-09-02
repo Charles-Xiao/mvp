@@ -23,7 +23,7 @@ export default function AuthWrapper({ children }: { children: React.ReactNode })
   }, [supabase, router, pathname])
 
   const isPublicRoute = (path: string) => {
-    const publicRoutes = ['/login', '/register', '/', '/tools', '/about']
+    const publicRoutes = ['/login', '/register', '/', '/tools', '/about', '/news']
     return publicRoutes.includes(path)
   }
 

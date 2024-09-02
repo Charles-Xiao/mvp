@@ -14,7 +14,7 @@ const Home: React.FC = () => {
         <title>登录 | 我的应用</title>
         <meta name="description" content="欢迎登录我的应用，请输入您的账号和密码" />
       </Head>
-      <Navbar />
+      <Navbar /> 
       <LoginForm />
       <Footer />
     </div>
