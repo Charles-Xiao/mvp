@@ -53,6 +53,7 @@ export default function IndexTracker() {
     const [ethIndex, setEthIndex] = useState<number | null>(null); // 新增 ETH 状态
     const [error, setError] = useState<string | null>(null);
     const [chartData, setChartData] = useState<{ date: string; BTC: number; color: string; }[]>([]); // 定义 chartData 的类型
+    const [ahr999Data, setAhr999Data] = useState<{ date: string; ahr999: number; color: string; }[]>([]);
     const calculateBTCIndex = async () => {
         try {
         const response = await fetch('https://api.coindesk.com/v1/bpi/currentprice/USD.json');
@@ -112,15 +113,40 @@ export default function IndexTracker() {
             }
         }
     };
-
+    const fetchAhr999Data = async () => { // 新增获取 AHR999 的函数
+        try {
+            const response = await fetch('https://coinank.com/indicatorapi/getAhr999Table');
+            if (!response.ok) {
+                throw new Error('网络错误');
+            }
+            const data = await response.json();
+            // Reverse the order of the data before formatting
+            const reversedData = data.data.reverse();
+            const formattedData = reversedData.map((item: { date: string; ahr999: number }, index: number) => ({ 
+                date: new Date(item.date).toISOString().split('T')[0],
+                ahr999: item.ahr999,
+                // Using a different color for each dot based on the index
+                color: `hsl(${(index % 360) % 360}, 100%, 60%)`,
+            }));
+            setAhr999Data(formattedData);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('未知错误');
+            }
+        }
+    };
     useEffect(() => {
         calculateBTCIndex();
         calculateETHIndex(); // 初始计算 ETH
         fetchChartData(); // 初始获取图表数据
+        fetchAhr999Data(); // 初始获取 AHR999 数据
         const interval = setInterval(() => {
           calculateBTCIndex();
           calculateETHIndex(); 
           fetchChartData();
+          fetchAhr999Data(); // 初始获取 AHR999 数据
         }, 30000);
         return () => clearInterval(interval);
       }, []);
@@ -128,12 +154,12 @@ export default function IndexTracker() {
   return (
     <div className="flex flex-wrap items-center justify-center">
       <div className="flex-1 text-center md:flex-1/2">
-        <div className="font-bold text-4xl mb-4">BTC实时价格</div>
-        <div className="text-4xl font-bold text-blue-500 mb-8">{btcIndex !== null ? `$${btcIndex.toFixed(0)} USD` : ''}</div>
+        <div className="font-bold text-3xl mb-4">BTC实时价格</div>
+        <div className="text-3xl font-bold text-blue-500 mb-8">{btcIndex !== null ? `$${btcIndex.toFixed(0)}` : ''}</div>
       </div>
-      <Card style={{ width: '500px', margin: '20px 10px' }}> {/* Adjusted card width for more space and added margin for mobile */}
+      <Card style={{ width: '400px', margin: '20px 10px' }}> {/* Adjusted card width for more space and added margin for mobile */}
         <CardHeader className="text-center">
-          <CardTitle>BTC 30 Days Price</CardTitle>
+          <CardTitle>BTC 30天历史价格</CardTitle>
           {/* <CardDescription>January - June 2024</CardDescription> */}
         </CardHeader>
         <CardContent>
@@ -179,6 +205,66 @@ export default function IndexTracker() {
                 }}
                />
             </LineChart>
+
+          </ChartContainer>
+        </CardContent>
+        <CardFooter className="flex-col items-end gap-2 text-sm">
+          {/* <div className="flex gap-2 font-medium leading-none">
+          </div> */}
+          <div className="leading-none text-muted-foreground">
+          图表数据仅供参考 不构成投资建议
+          </div>
+        </CardFooter>
+      </Card>
+      <Card style={{ width: '400px', margin: '20px 10px' }}> {/* Adjusted card width for more space and added margin for mobile */}
+        <CardHeader className="text-center">
+          <CardTitle>BTC ahr999囤币指数</CardTitle>
+          {/* <CardDescription>January - June 2024</CardDescription> */}
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig}>
+            <LineChart
+              accessibilityLayer
+              data={ahr999Data}
+              margin={{
+                top: 24,
+                left: 24,
+                right: 24,
+                bottom: 24
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    indicator="line"
+                    nameKey="Bitcoin"
+                    hideLabel
+                  />
+                }
+              />
+              <Line
+                dataKey="ahr999"
+                type="natural"
+                stroke="var(--color-visitors)"
+                strokeWidth={2}
+                dot={({ payload, ...props }) => {
+                  return (
+                    <Dot
+                      key={payload.date}
+                      r={5}
+                      cx={props.cx}
+                      cy={props.cy}
+                      // Adjusted to use the color from the data
+                      fill={payload.color}
+                      stroke={payload.color}
+                    />
+                  )
+                }}
+               />
+            </LineChart>
+
           </ChartContainer>
         </CardContent>
         <CardFooter className="flex-col items-end gap-2 text-sm">
@@ -190,8 +276,8 @@ export default function IndexTracker() {
         </CardFooter>
       </Card>
       <div className="flex-1 text-center md:flex-1/2">
-        <div className="font-bold text-4xl mb-4">ETH实时价格</div>
-        <div className="text-4xl font-bold text-green-500 mb-8">{ethIndex !== null ? `$${ethIndex.toFixed(0)} USD` : ''}</div>
+        <div className="font-bold text-3xl mb-4">ETH实时价格</div>
+        <div className="text-3xl font-bold text-green-500 mb-8">{ethIndex !== null ? `$${ethIndex.toFixed(0)}` : ''}</div>
       </div>
     </div>
   )
