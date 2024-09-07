@@ -21,7 +21,8 @@ export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname
 
   // 如果路径是 /tools、根路径、public 文件夹，或者用户已登录，允许访问
-  if (path.startsWith('/tools') || path === '/' || path.startsWith('/public') || path.startsWith('/about') || path.startsWith('/news') || session) {
+  if (path.startsWith('/tools') || path === '/' || path.startsWith('/public')
+      || path.startsWith('/about') || path.startsWith('/news') || path.startsWith('/docs') || session) {
     return res
   }
 
