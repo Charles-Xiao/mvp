@@ -16,7 +16,8 @@ const Article = () => {
     const fetchArticleData = async () => {
       const { data, error } = await supabase
         .from('articles')
-        .select('id, title, subtitle, content, created_at, section');
+        .select('id, title, subtitle, content, created_at, section')
+        .order('section', { ascending: false });
 
         if (error) {
             console.error('Error fetching articles:', error);
