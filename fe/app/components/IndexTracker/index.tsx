@@ -56,12 +56,12 @@ export default function IndexTracker() {
     const [ahr999Data, setAhr999Data] = useState<{ date: string; ahr999: number; color: string; }[]>([]);
     const calculateBTCIndex = async () => {
         try {
-        const response = await fetch('https://api.coindesk.com/v1/bpi/currentprice/USD.json');
+        const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD');
         if (!response.ok) {
             throw new Error('网络错误');
         }
         const data = await response.json();
-        setBtcIndex(data.bpi.USD.rate_float);
+        setBtcIndex(data.USD);
         setError(null);
         } catch (err: unknown) {
         if (err instanceof Error) {
