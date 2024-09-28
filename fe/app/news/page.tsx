@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
@@ -9,67 +9,38 @@ import IndexTracker from '../components/IndexTracker';
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 
-// Mock data for news articles
-const newsArticles = [
-  {
-    id: 1,
-    title: "量子计算取得重大突破",
-    summary: "科学家在量子计算领域取得重大进展，为更强大的计算机铺平道路。",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80",
-    category: "科技",
-  },
-  {
-    id: 2,
-    title: "全球气候峰会达成协议",
-    summary: "世界领导人在最新的国际峰会上就雄心勃勃的气候目标达成共识。",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80",
-    category: "环境",
-  },
-  {
-    id: 3,
-    title: "革命性AI模型通过图灵测试",
-    summary: "一个新的人工智能模型成功通过图灵测试，引发对AI未来的思考。",
-    category: "人工智能",image: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 4,
-    title: "太空旅游首次平民任务启动",
-    summary: "首个全平民太空任务成功发射，标志着太空探索和旅游的新时代。",
-    image: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
-    category: "太空",
-  },
-  {
-    id: 5,
-    title: "可再生能源存储技术突破",
-    summary: "研究人员开发出新的可再生能源存储方法，有望解决间歇性问题。",
-    image: "https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
-    category: "能源",
-  },
-  {
-    id: 6,
-    title: "全球经济论坛关注不平等问题",
-    summary: "世界经济领袖齐聚一堂，讨论减少全球财富不平等的策略。",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80",
-    category: "经济",
-  },
-  {
-    id: 7,
-    title: "新型癌症治疗方法显示出积极结果",
-    summary: "一种新颖的免疫疗法在早期临床试验中表现出显著成效。",
-    image: "https://images.unsplash.com/photo-1519690889869-e705e59f72e1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
-    category: "健康",
-  },
-  {
-    id: 8,
-    title: "大规模网络安全漏洞影响数百万用户",
-    summary: "一次广泛的网络攻击危及多个平台的用户数据，引发安全担忧。",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80",
-    category: "网络安全",
-  },
-]
+const imageUrls = [
+  "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
+  "https://images.unsplash.com/photo-1726931598787-00b60840177c?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxOHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1726243204979-f5d58966aaa2?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyMHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1726915257451-a14bd105ca55?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0NXx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1727324735243-de8c0997c169?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw5fHx8ZW58MHx8fHx8",
+  "https://images.unsplash.com/photo-1727507264931-19d41e653a44?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw3fHx8ZW58MHx8fHx8",
+  "https://images.unsplash.com/photo-1727229900027-82129b3f8af2?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyM3x8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1727463995295-3505cb692ebb?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyN3x8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1727331000865-b5085a18463b?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwzNXx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1726473039977-845a26101d7a?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0MHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1719937051176-9b98352a6cf4?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw1MXx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1727501607287-e751b43f6f99?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw1NXx8fGVufDB8fHx8fA%3D%3D",
+];
+
+let availableImageUrls = [...imageUrls];
+
+const getRandomImageUrl = (index: number) => {
+  if (availableImageUrls.length === 0) {
+    availableImageUrls = [...imageUrls];
+  }
+  const randomIndex = Math.floor(Math.random() * availableImageUrls.length);
+  const selectedUrl = availableImageUrls[randomIndex];
+  availableImageUrls.splice(randomIndex, 1);
+  return selectedUrl;
+};
 
 // Article component
-const Article = ({ title, summary, image, category }: { title: string, summary: string, image: string, category: string }) => (
+const Article = ({ title, hot, url, image }: { title: string, hot: string, url: string, image: string }) => (
   <div className="relative group overflow-hidden rounded-lg shadow-md">
     <Image
       src={image}
@@ -81,17 +52,62 @@ const Article = ({ title, summary, image, category }: { title: string, summary: 
     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/0 transition-opacity duration-300 group-hover:opacity-100" />
     <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
       <Badge className="self-start mb-2 bg-primary text-primary-foreground">
-        {category}
+        {hot}
       </Badge>
       <h2 className="text-lg font-semibold mb-2 line-clamp-2">{title}</h2>
-      <p className="text-sm line-clamp-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <span className="font-medium">摘要：</span>{summary}
-      </p>
+      <a href={url} target="_blank" rel="noopener noreferrer" className="text-sm text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:underline">
+        阅读更多
+      </a>
     </div>
   </div>
 )
 
 const Home: React.FC = () => {
+  const [newsArticles, setNewsArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        // https://api.vvhan.com/
+        const [pengPaiResponse, huXiuResponse] = await Promise.all([
+          fetch('https://api.vvhan.com/api/hotlist/pengPai'),
+          fetch('https://api.vvhan.com/api/hotlist/itNews')
+        ]);
+        
+        const pengPaiData = await pengPaiResponse.json();
+        const huXiuData = await huXiuResponse.json();
+        
+        let combinedArticles: any[] = [];
+        
+        if (Array.isArray(pengPaiData.data)) {
+          combinedArticles = [...combinedArticles, ...pengPaiData.data];
+        }
+        
+        if (Array.isArray(huXiuData.data)) {
+          combinedArticles = [...combinedArticles, ...huXiuData.data];
+        }
+        
+        if (combinedArticles.length > 0) {
+          const processedArticles = combinedArticles
+            .slice(0, 32)
+            .map((article: any, index: number) => ({
+              ...article,
+              image: getRandomImageUrl(index)
+            }));
+          setNewsArticles(processedArticles as any);
+        } else {
+          console.error('No valid data received from APIs');
+        }
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
 
   return (
     <div className="bg-white min-h-screen">
@@ -103,19 +119,24 @@ const Home: React.FC = () => {
 
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mt-24 mb-8 text-center">最新资讯</h1>
-      <div className="container mx-auto px-4 py-8">
-        <IndexTracker />
+        <div className="container mx-auto px-4 py-8">
+          <IndexTracker />
+        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {newsArticles.map((article: any) => (
+              <Article key={article.url} {...article} />
+            ))}
+          </div>
+        )}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {newsArticles.map((article) => (
-          <Article key={article.id} {...article} />
-        ))}
-      </div>
-    </div>
       <Footer />
     </div>
   );
 };
 
 export default Home;
-

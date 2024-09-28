@@ -90,17 +90,19 @@ export default function IndexTracker() {
       };
     const fetchChartData = async () => {
         try {
-            // https://api.coinbase.com/v2/prices/BTC-USD/spot
-            // https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD
+           // https://api.coinbase.com/v2/prices/BTC-USD/spot
             // https://publicapis.io/coin-desk-api
-            const response = await fetch('https://api.coindesk.com/v1/bpi/historical/close.json');
+            // https://api.coindesk.com/v1/bpi/historical/close.json
+            const response = await fetch('https://coinank.com/indicatorapi/getAhr999Table');
             if (!response.ok) {
                 throw new Error('网络错误');
             }
             const data = await response.json();
-            const formattedData = Object.entries(data.bpi).map(([date, value], index) => ({
-                date,
-                BTC: Number(value),
+            // Reverse the order of the data before formatting
+            const reversedData = data.data.reverse();
+            const formattedData = reversedData.map((item: { date: string; value: number }, index: number) => ({
+                date: new Date(item.date).toISOString().split('T')[0],
+                BTC: item.value,
                 // Using a different color for each dot based on the index
                 color: `hsl(${(index % 360) % 360}, 100%, 60%)`,
             }));
@@ -159,7 +161,7 @@ export default function IndexTracker() {
       </div>
       <Card style={{ width: '400px', margin: '20px 10px' }}> {/* Adjusted card width for more space and added margin for mobile */}
         <CardHeader className="text-center">
-          <CardTitle>BTC 30天历史价格</CardTitle>
+          <CardTitle>BTC 7天历史价格</CardTitle>
           {/* <CardDescription>January - June 2024</CardDescription> */}
         </CardHeader>
         <CardContent>
