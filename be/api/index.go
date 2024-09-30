@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -42,7 +41,6 @@ func init() {
 	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
 
-	// 将 CORS 中间件添加到 engine
 	engine.Use(cors.New(config))
 
 	// url: https://mvp-be.vercel.app/hello
@@ -66,9 +64,9 @@ func init() {
 			Select("id, title, subtitle, content, created_at, section", "", false).
 			Order("section", &postgrest.OrderOpts{Ascending: true}).
 			ExecuteTo(&articles)
-		fmt.Println(articles)
+		log.Println(articles)
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("Error fetching articles: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching articles"})
 			return
 		}
