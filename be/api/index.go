@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -54,8 +55,8 @@ func init() {
 			Select("id, title, subtitle, content, created_at, section", "", false).
 			Order("section", &postgrest.OrderOpts{Ascending: true}).
 			ExecuteTo(&articles)
-
 		if err != nil {
+			fmt.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching articles"})
 			return
 		}
