@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/supabase-community/postgrest-go"
 	"github.com/supabase-community/supabase-go"
@@ -33,6 +34,16 @@ func init() {
 	if err != nil {
 		log.Fatalf("Error initializing Supabase client: %v", err)
 	}
+
+	// CORS 配置
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	// config.AllowOrigins = []string{"http://localhost:3000", "https://your-frontend-domain.com"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+
+	// 将 CORS 中间件添加到 engine
+	engine.Use(cors.New(config))
 
 	// url: https://mvp-be.vercel.app/hello
 	engine.GET("/hello", func(c *gin.Context) {
