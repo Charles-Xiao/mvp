@@ -2,49 +2,48 @@
 
 import React, { useEffect, useState } from 'react';
 import { Input } from "@/components/ui/input"
-import Link from "next/link"
-import supabase from '@/app/supabase-client'
 
 const Article = () => {
   type SidebarLink = { id: number; href: string; text: string };
   type SidebarSection = { id: number; title: string; links: SidebarLink[] };
   const [sidebarData, setSidebarData] = useState<SidebarSection[]>([]); // Specify type for sidebarData
 
-  const [articles, setArticles] = useState<{ id: number; title: string; subtitle: string; content: string; created_at: string; section: string }[]>([]); // Specify type for articles
-  const [selectedArticle, setSelectedArticle] = useState<{ id: number; title: string; subtitle: string; content: string; created_at: string; section: string }>();
+  const [articles, setArticles] = useState<{ id: string; title: string; subtitle: string; content: string; created_at: string; section: string }[]>([]); // Specify type for articles
+  const [selectedArticle, setSelectedArticle] = useState<{ id: string; title: string; subtitle: string; content: string; created_at: string; section: string }>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchArticleData = async () => {
       setIsLoading(true);
-      const { data, error } = await supabase
-        .from('articles')
-        .select('id, title, subtitle, content, created_at, section')
-        .order('section', { ascending: true });
+      try {
+        const response = await fetch('https://api.ai-group.top/articles');
+        const { data } = await response.json();
 
-        if (error) {
-            console.error('Error fetching articles:', error);
-        } else {
-            setArticles(data);
-            setSelectedArticle(data[0]);
-            // Generate sidebar data based on unique sections from articles
-            const uniqueSections = Array.from(new Set(data.map(article => article.section)));
-            const sidebarData = uniqueSections.map((section, index) => {
-              const sectionArticles = data.filter(article => article.section === section);
-              const links = sectionArticles.map((article, linkIndex) => ({
-                id: linkIndex + 1,
-                href: `#${article.id}`,
-                text: article.title
-              }));
-              return {
-                id: index + 1,
-                title: section,
-                links: links
-              };
-            });
-            setSidebarData(sidebarData);
+        if (data) {
+          setArticles(data);
+          setSelectedArticle(data[0]);
+          // Generate sidebar data based on unique sections from articles
+          const uniqueSections = Array.from(new Set(data.map((article: { section: string }) => article.section)));
+          const sidebarData = uniqueSections.map((section, index) => {
+            const sectionArticles = data.filter((article: { section: string }) => article.section === section);
+            const links = sectionArticles.map((article: { id: string, title: string }, linkIndex: number) => ({
+              id: linkIndex + 1,
+              href: `#${article.id}`,
+              text: article.title
+            }));
+            return {
+              id: index + 1,
+              title: section,
+              links: links
+            };
+          });
+          setSidebarData(sidebarData as SidebarSection[]);
         }
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      } finally {
         setIsLoading(false);
+      }
     };
 
     fetchArticleData();
@@ -73,7 +72,7 @@ const Article = () => {
                           e.preventDefault();
                           
                           const articleId = link.href.split('#')[1];
-                          const selectedArticle = articles.find(article => article.id.toString() === articleId);
+                          const selectedArticle = articles.find(article => article.id === articleId);
                           if (selectedArticle) {
                             // Directly update the state to trigger a re-render with the selected article's content
                             setSelectedArticle(selectedArticle);
