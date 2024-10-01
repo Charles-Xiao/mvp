@@ -79,29 +79,37 @@ const Home: React.FC = () => {
     const slug = title.toLowerCase().replace(/ /g, '-');
     const tagsArray = tags.split(',').map(tag => tag.trim());
 
-    const { data, error } = await supabase
-      .from('blogs')
-      .insert({
-        title,
-        slug,
-        content,
-        excerpt: excerpt || null,
-        author: user.email,
-        image_url: imageUrl || null,
-        category: category || null,
-        tags: tagsArray,
-        status: 'published',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        view_count: 0,
-        like_count: 0
-      })
-      .select();
+    const newBlog = {
+      title,
+      slug,
+      content,
+      excerpt: excerpt || null,
+      author: user.email,
+      image_url: imageUrl || null,
+      category: category || null,
+      tags: tagsArray,
+      status: 'published',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      view_count: 0,
+      like_count: 0
+    };
 
-    if (error) {
-      console.error('Error inserting post:', error);
-      alert('发布失败，请重试');
-    } else {
+    try {
+      const response = await fetch('https://api.ai-group.top/blogs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newBlog),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create blog post');
+      }
+
+      const result = await response.json();
+      // console.log('Blog created successfully:', result);
       alert('发布成功！');
       setTitle('');
       setContent('');
@@ -110,6 +118,9 @@ const Home: React.FC = () => {
       setCategory('');
       setTags('');
       fetchPosts();
+    } catch (error) {
+      console.error('Error inserting post:', error);
+      alert('发布失败，请重试');
     }
   };
 
