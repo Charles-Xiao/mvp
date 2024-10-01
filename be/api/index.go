@@ -2,8 +2,10 @@ package handler
 
 import (
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -113,6 +115,13 @@ func init() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+
+		// Generate a unique ID based on the current timestamp and a random suffix
+		source := rand.NewSource(time.Now().UnixNano())
+		r := rand.New(source)
+		randomSuffix := r.Intn(1000)                                            // Generate a random number between 0 and 999
+		newBlog.ID = int64(time.Now().UnixNano()/1000000) + int64(randomSuffix) // Convert nanoseconds to milliseconds and add random suffix
+
 		_, _, err := supabaseClient.From("blogs").Insert(newBlog, false, "", "", "").Execute()
 		if err != nil {
 			log.Printf("Error inserting blog: %v", err)
