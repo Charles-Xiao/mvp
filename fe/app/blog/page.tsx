@@ -53,15 +53,17 @@ const Home: React.FC = () => {
   };
 
   const fetchPosts = async () => {
-    const { data, error } = await supabase
-      .from('blogs')
-      .select('*')
-      .order('created_at', { ascending: false });
-    
-    if (error) {
+    try {
+      const response = await fetch('https://api.ai-group.top/blogs');
+      const { data, error } = await response.json();
+      
+      if (error) {
+        console.error('Error fetching posts:', error);
+      } else {
+        setPosts(data || []);
+      }
+    } catch (error) {
       console.error('Error fetching posts:', error);
-    } else {
-      setPosts(data || []);
     }
   };
 
