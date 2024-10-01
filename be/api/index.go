@@ -106,6 +106,26 @@ func init() {
 		})
 	})
 
+	// url: https://mvp-be.vercel.app/blogs
+	engine.POST("/blogs", func(c *gin.Context) {
+		var newBlog Blog
+		if err := c.ShouldBindJSON(&newBlog); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		_, _, err := supabaseClient.From("blogs").Insert(newBlog, false, "", "", "").Execute()
+		if err != nil {
+			log.Printf("Error inserting blog: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error inserting blog"})
+			return
+		}
+
+		c.JSON(http.StatusCreated, gin.H{
+			"message": "Blog created successfully",
+			"data":    newBlog,
+		})
+	})
+
 	// Handle 404 Not Found
 	engine.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{
