@@ -26,6 +26,23 @@ type Article struct {
 	Section   string `json:"section"`
 }
 
+type Blog struct {
+	ID        int64    `json:"id"`
+	Title     string   `json:"title"`
+	Slug      string   `json:"slug"`
+	Content   string   `json:"content"`
+	Excerpt   string   `json:"excerpt"`
+	Author    string   `json:"author"`
+	ImageURL  string   `json:"image_url"`
+	Category  string   `json:"category"`
+	Tags      []string `json:"tags"`
+	Status    string   `json:"status"`
+	CreatedAt string   `json:"created_at"`
+	UpdatedAt string   `json:"updated_at"`
+	ViewCount int      `json:"view_count"`
+	LikeCount int      `json:"like_count"`
+}
+
 func init() {
 
 	var err error
@@ -40,17 +57,10 @@ func init() {
 	// config.AllowOrigins = []string{"http://localhost:3000", "https://your-frontend-domain.com"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
-
 	engine.Use(cors.New(config))
 
-	// url: https://mvp-be.vercel.app/hello
+	// url: https://mvp-be.vercel.app/hello?name=Charles
 	engine.GET("/hello", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello, Vercel!",
-		})
-	})
-	// url: https://mvp-be.vercel.app/greet?name=Charles
-	engine.GET("/greet", func(c *gin.Context) {
 		name := c.DefaultQuery("name", "Guest")
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Hello, " + name + "!",
@@ -64,7 +74,7 @@ func init() {
 			Select("id, title, subtitle, content, created_at, section", "", false).
 			Order("section", &postgrest.OrderOpts{Ascending: true}).
 			ExecuteTo(&articles)
-		log.Println(articles)
+		// log.Println(articles)
 		if err != nil {
 			log.Fatalf("Error fetching articles: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching articles"})
@@ -73,6 +83,25 @@ func init() {
 
 		c.JSON(http.StatusOK, gin.H{
 			"data":  articles,
+			"error": nil,
+		})
+	})
+
+	// url: https://mvp-be.vercel.app/blogs
+	engine.GET("/blogs", func(c *gin.Context) {
+		var blogs []Blog
+		_, err := supabaseClient.From("blogs").
+			Select("*", "", false).
+			Order("created_at", &postgrest.OrderOpts{Ascending: false}).
+			ExecuteTo(&blogs)
+		if err != nil {
+			log.Fatalf("Error fetching blogs: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching blogs"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"data":  blogs,
 			"error": nil,
 		})
 	})
