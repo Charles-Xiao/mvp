@@ -9,11 +9,11 @@ const DateProgressor: React.FC = () => {
       const now = new Date();
       const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-      const dayProgress = Math.floor((now.getHours() * 60 + now.getMinutes()) / (24 * 60) * 100);
-      const weekProgress = Math.floor(((now.getDay() * 24 + now.getHours()) * 60 + now.getMinutes()) / (7 * 24 * 60) * 100);
+      const dayProgress = Number(((now.getHours() * 60 + now.getMinutes()) / (24 * 60) * 100).toFixed(1));
+      const weekProgress = Number((((now.getDay() * 24 + now.getHours()) * 60 + now.getMinutes()) / (7 * 24 * 60) * 100).toFixed(1));
       const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-      const monthProgress = Math.floor(((now.getDate() - 1) * 24 * 60 + now.getHours() * 60 + now.getMinutes()) / (daysInMonth * 24 * 60) * 100);
-      const yearProgress = Math.floor(((now.getTime() - startOfYear.getTime()) / (365 * 24 * 60 * 60 * 1000)) * 100);
+      const monthProgress = Number((((now.getDate() - 1) * 24 * 60 + now.getHours() * 60 + now.getMinutes()) / (daysInMonth * 24 * 60) * 100).toFixed(1));
+      const yearProgress = Number((((now.getTime() - startOfYear.getTime()) / (365 * 24 * 60 * 60 * 1000)) * 100).toFixed(1));
 
       setProgress({
         day: dayProgress,
