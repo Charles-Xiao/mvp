@@ -1,3 +1,4 @@
+import AnimatedBorderTrail from '@/components/animata/container/animated-border-trail';
 import React from 'react';
 
 interface BannerProps {
@@ -23,9 +24,18 @@ const Banner: React.FC<BannerProps> = () => {
         探索我们的产品和服务
       </p>
       <div className="mt-6">
-        <button className="px-3 py-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 transition duration-300">
+      <AnimatedBorderTrail
+        className="bg-zinc-600"
+        contentClassName="bg-zinc-800"
+        trailColor="white"
+      >
+        <a
+          href="/news"
+          className="px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 transition duration-300 inline-block"
+        >
           更多内容
-        </button>
+        </a>
+      </AnimatedBorderTrail>
       </div>
     </div>
   );

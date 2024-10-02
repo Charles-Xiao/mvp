@@ -6,10 +6,42 @@ import { toast } from "sonner"
 import { useRouter } from 'next/navigation';
 import supabase from '@/app/supabase-client';
 import dayjs from '@/app/utils/dayjs-config';
+import confetti from "canvas-confetti";
 
 interface NavbarProps {
   // 在这里定义 Navbar 组件需要的属性
 }
+
+const handleClick = () => {
+  const defaults = {
+    spread: 360,
+    ticks: 50,
+    gravity: 0,
+    decay: 0.94,
+    startVelocity: 30,
+    colors: ["#FFE400", "#FFBD00", "#E89400", "#FFCA6C", "#FDFFB8"],
+  };
+
+  const shoot = () => {
+    confetti({
+      ...defaults,
+      particleCount: 40,
+      scalar: 1.2,
+      shapes: ["star"],
+    });
+
+    confetti({
+      ...defaults,
+      particleCount: 10,
+      scalar: 0.75,
+      shapes: ["circle"],
+    });
+  };
+
+  setTimeout(shoot, 0);
+  setTimeout(shoot, 100);
+  setTimeout(shoot, 200);
+};
 
 const Navbar: React.FC<NavbarProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -189,6 +221,7 @@ const Navbar: React.FC<NavbarProps> = () => {
               <button
                 className="px-2 py-1 rounded-md bg-gray-800 text-white hover:bg-gray-700 transition duration-300"
                 onClick={() => {
+                  handleClick();
                   router.push("/register");
                 }}
               >

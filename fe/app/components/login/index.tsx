@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ConfettiButton } from "@/components/ui/confetti";
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
@@ -92,12 +93,12 @@ export function LoginForm() {
             />
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <Button type="submit" className="w-full rounded-md bg-blue-600 text-white hover:bg-blue-500 transition duration-300" disabled={isLoading}>
+          <ConfettiButton type="submit" className="w-full rounded-md bg-blue-600 text-white hover:bg-blue-500 transition duration-300" disabled={isLoading}>
             {isLoading ? 'Logging in...' : 'Login'}
-          </Button>
-          <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
+          </ConfettiButton>
+          <ConfettiButton variant="outline" className="w-full" onClick={handleGoogleLogin}>
             Login with Google
-          </Button>
+          </ConfettiButton>
         </form>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}
