@@ -15,6 +15,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { Buffer } from 'buffer';
 import { GlobeEarth } from '../components/globeEarth';
+import DateProgressor from '../components/DateProgressor';
 
 dayjs.tz.setDefault('Asia/Shanghai');
 dayjs.extend(utc);
@@ -108,8 +109,10 @@ const Home: React.FC = () => {
       </Head>
       <Navbar />
       <Toaster />
-      
       <div className="flex items-center mt-20 justify-center gap-0.5 mb-2">
+        <DateProgressor />
+      </div>
+      <div className="flex items-center mt-10 justify-center gap-0.5 mb-2">
         <GlobeEarth />
       </div>
       
