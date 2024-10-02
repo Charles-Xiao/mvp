@@ -430,16 +430,16 @@ export function GlobeEarth() {
           transition={{
             duration: 1,
           }}
-          className="mb-2"
+          className="mb-2 z-20 relative"
         >
           <h2 className="text-center text-xl sm:text-2xl md:text-3xl font-bold text-black dark:text-white">人民币-美元汇率</h2>
           <p className="text-center text-sm sm:text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-1 mx-auto">
             {exchangeRate && `1 美元 = ${exchangeRate} 人民币`}
           </p>
         </motion.div>
-        <div className="relative h-[200px] sm:h-[350px] md:h-[450px]">
+        <div className="relative h-[200px] sm:h-[350px] md:h-[450px] w-full">
           <div className="absolute w-full bottom-0 inset-x-0 h-16 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" />
-          <div className="absolute w-full h-full z-10">
+          <div className="absolute w-full h-full z-10 top-0 left-0">
             <World data={sampleArcs} globeConfig={globeConfig} />
           </div>
         </div>

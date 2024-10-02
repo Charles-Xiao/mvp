@@ -208,7 +208,7 @@ const Navbar: React.FC<NavbarProps> = () => {
         <div className="flex items-center ml-auto gap-5">
           {isLoggedIn === null ? null : isLoggedIn ? (
             <>
-              <span className="text-white mr-2">{userName ? `欢迎, ${userName}!` : '未知用户'}</span> {/* 显示用户名 */}
+              <span className="text-white mr-2">{userName ? `${userName}` : 'visitor'}</span> {/* 显示用户名 */}
               <button
                 className="px-2 py-1 rounded-md bg-red-600 text-white hover:bg-red-500 transition duration-300"
                 onClick={handleLogout}
