@@ -4,18 +4,25 @@ import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/e1RPUtk9VWY
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
-
 export default function AboutPage() {
+  const pageTitle = "About Us | Dance Events";
+  const pageDescription = "Learn more about our dance events company, our history, team, and culture. Discover how we've been revolutionizing the dance industry since 2010.";
+  const pageKeywords = "dance events, company history, team, culture, innovation, dance industry";
+
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <Head>
-        <title>About Us | Dance Events</title>
-        <meta name="description" content="Learn more about our dance events and what we offer." />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={pageKeywords} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ai-group.top/about" /> 
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <link rel="canonical" href="https://ai-group.top/about" />
       </Head>
       <Navbar />
       <section className="w-full h-[60vh] relative">

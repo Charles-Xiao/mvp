@@ -104,8 +104,12 @@ const Home: React.FC = () => {
   return (
     <div className="bg-white min-h-screen">
       <Head>
-        <title>Tools</title>
-        <meta name="description" content="some tools" />
+        <title>在线工具箱 - 时间转换、编码解码、IP查询等实用工具</title>
+        <meta name="description" content="免费在线工具箱，提供Unix时间戳转换、Base64编码解码、URL编码解码、Hex编码解码、IP地址查询、日期计算等多种实用工具。轻松高效完成各种日常任务。" />
+        <meta name="keywords" content="在线工具,时间转换,Base64,URL编码,Hex编码,IP查询,日期计算,实用工具" />
+        <meta name="author" content="ai-group" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="canonical" href="https://ai-group.top/tools" />
       </Head>
       <Navbar />
       <Toaster />

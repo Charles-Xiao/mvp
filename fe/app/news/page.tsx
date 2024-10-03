@@ -112,8 +112,9 @@ const Home: React.FC = () => {
   return (
     <div className="bg-white min-h-screen">
       <Head>
-        <title>My Page Title</title>
-        <meta name="description" content="This is my page description" />
+        <title>最新资讯 | 热门新闻和IT资讯</title>
+        <meta name="description" content="获取最新的热门新闻和IT行业资讯。我们汇集了来自澎湃新闻和虎嗅网的最新报道，为您提供及时、全面的信息更新。" />
+        <meta name="keywords" content="新闻, IT资讯, 热门话题, 科技新闻, 澎湃新闻, 虎嗅网" />
       </Head>
       <Navbar />
 

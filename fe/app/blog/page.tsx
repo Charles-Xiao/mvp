@@ -124,11 +124,24 @@ const Home: React.FC = () => {
     }
   };
 
+  const pageTitle = "博客 | 我的应用";
+  const pageDescription = "欢迎来到我的博客。这里有最新的文章发布，涵盖多个主题。登录后可以发布自己的博客文章。";
+  const pageKeywords = "博客, 文章, 发布, 阅读, 分享";
+
   return (
     <div className="flex flex-col min-h-screen">
       <Head>
-        <title>博客 | 我的应用</title>
-        <meta name="description" content="欢迎发布" />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={pageKeywords} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ai-group.top/blog" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <link rel="canonical" href="https://ai-group.top/blog" />
       </Head>
       <Navbar />
       {isLoading ? (
@@ -197,7 +210,7 @@ const Home: React.FC = () => {
           )}
           <div>
             {posts.map((post) => (
-              <div key={post.id} className="mb-6 p-4 border rounded">
+              <article key={post.id} className="mb-6 p-4 border rounded">
                 <h2 className="text-xl font-bold">{post.title}</h2>
                 <p className="text-gray-600 text-sm">
                   {post.author} - {dayjs(post.created_at).format('YYYY-MM-DD HH:mm:ss')}
@@ -221,7 +234,7 @@ const Home: React.FC = () => {
                   浏览: {post.view_count} | 
                   点赞: {post.like_count}
                 </p>
-              </div>
+              </article>
             ))}
           </div>
         </main>
