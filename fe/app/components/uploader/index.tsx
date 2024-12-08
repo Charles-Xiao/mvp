@@ -54,7 +54,7 @@ const Uploader: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-md mt-8 sm:mt-24">
+    <div className="w-full max-w-md mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-md mt-24 sm:mt-24">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">文件上传</h1>
       <div className="space-y-3 sm:space-y-4">
         <div>
