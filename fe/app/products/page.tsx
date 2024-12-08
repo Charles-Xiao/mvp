@@ -1,10 +1,15 @@
+"use client";
+
+import { useState } from 'react';
 import Head from 'next/head';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
+import ImageUploader from '../components/uploader';
 
 const Home: React.FC = () => {
+
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen flex flex-col">
       <Head>
         <title>AI Group 产品列表 | 智能工具和服务平台</title>
         <meta name="description" content="探索AI Group的创新产品列表，包括智能工具、个性化服务和尖端AI解决方案。提升效率，激发创意，体验AI的无限可能。" />
@@ -17,8 +22,10 @@ const Home: React.FC = () => {
         <meta property="og:url" content="https://ai-group.top/products" />
         <meta property="og:type" content="website" />
       </Head>
-      <Navbar /> 
-      {/* 这里可以添加产品列表的具体内容 */}
+      <Navbar />
+      <main className="flex-grow flex items-center justify-center">
+        <ImageUploader />
+      </main>
       <Footer />
     </div>
   );
