@@ -96,18 +96,16 @@ func init() {
 		}
 
 		// Get total count
-		var countResult []struct {
-			Count int64 `json:"count"`
-		}
-		_, err = supabaseClient.From("articles").
-			Select("count(*)", "", false).
-			ExecuteTo(&countResult)
+		var count int64
+		countResult, err := supabaseClient.From("articles").
+			Select("id", "exact", true).
+			Execute()
 
-		count := int64(0)
-		if err == nil && len(countResult) > 0 {
-			count = countResult[0].Count
-		} else {
+		if err != nil {
 			log.Printf("Error getting total count: %v", err)
+			count = 0
+		} else {
+			count = countResult.Count
 		}
 
 		c.JSON(http.StatusOK, gin.H{
@@ -143,18 +141,16 @@ func init() {
 		}
 
 		// Get total count
-		var countResult []struct {
-			Count int64 `json:"count"`
-		}
-		_, err = supabaseClient.From("blogs").
-			Select("count(*)", "", false).
-			ExecuteTo(&countResult)
+		var count int64
+		countResult, err := supabaseClient.From("blogs").
+			Select("id", "exact", true).
+			Execute()
 
-		count := int64(0)
-		if err == nil && len(countResult) > 0 {
-			count = countResult[0].Count
-		} else {
+		if err != nil {
 			log.Printf("Error getting total count: %v", err)
+			count = 0
+		} else {
+			count = countResult.Count
 		}
 
 		c.JSON(http.StatusOK, gin.H{
