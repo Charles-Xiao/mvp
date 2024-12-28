@@ -83,7 +83,7 @@ func init() {
 		end := pageInt*numInt - 1
 
 		var articles []Article
-		_, err := supabaseClient.From("articles").
+		totalCount, err := supabaseClient.From("articles").
 			Select("id, title, subtitle, content, created_at, section", "", false).
 			Order("section", &postgrest.OrderOpts{Ascending: true}).
 			Range(start, end, "").
@@ -95,22 +95,9 @@ func init() {
 			return
 		}
 
-		// Get total count
-		var count int64
-		countResult, _, err := supabaseClient.From("articles").
-			Select("id", "exact", false).
-			Execute()
-
-		if err != nil {
-			log.Printf("Error getting total count: %v", err)
-			count = 0
-		} else {
-			count = countResult.Count
-		}
-
 		c.JSON(http.StatusOK, gin.H{
 			"data":  articles,
-			"total": count,
+			"total": totalCount,
 			"error": nil,
 		})
 	})
@@ -128,7 +115,7 @@ func init() {
 		end := pageInt*numInt - 1
 
 		var blogs []Blog
-		queryResult, err := supabaseClient.From("blogs").
+		totalCount, err := supabaseClient.From("blogs").
 			Select("*", "exact", true).
 			Order("created_at", &postgrest.OrderOpts{Ascending: false}).
 			Range(start, end, "").
@@ -142,7 +129,7 @@ func init() {
 
 		c.JSON(http.StatusOK, gin.H{
 			"data":  blogs,
-			"total": queryResult.Count,
+			"total": totalCount,
 			"error": nil,
 		})
 	})
