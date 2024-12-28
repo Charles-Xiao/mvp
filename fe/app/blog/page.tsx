@@ -25,7 +25,7 @@ interface BlogPost {
   view_count: number;
   like_count: number;
 }
-// TODO: 分页展示
+
 const Home: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -36,11 +36,14 @@ const Home: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const postsPerPage = 10;
 
   useEffect(() => {
     const initializePage = async () => {
       await checkLoginStatus();
-      await fetchPosts();
+      await fetchPosts(1);
       setIsLoading(false);
     };
 
@@ -52,19 +55,25 @@ const Home: React.FC = () => {
     setIsLoggedIn(!!user);
   };
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (page: number) => {
     try {
-      const response = await fetch('https://api.ai-group.top/blogs');
-      const { data, error } = await response.json();
+      const response = await fetch(`https://api.ai-group.top/blogs?num=${postsPerPage}&page=${page}`);
+      const { data, total, error } = await response.json();
       
       if (error) {
         console.error('Error fetching posts:', error);
       } else {
         setPosts(data || []);
+        setTotalPages(Math.ceil(total / postsPerPage));
+        setCurrentPage(page);
       }
     } catch (error) {
       console.error('Error fetching posts:', error);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    fetchPosts(page);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,7 +118,6 @@ const Home: React.FC = () => {
       }
 
       const result = await response.json();
-      // console.log('Blog created successfully:', result);
       alert('发布成功！');
       setTitle('');
       setContent('');
@@ -117,7 +125,7 @@ const Home: React.FC = () => {
       setImageUrl('');
       setCategory('');
       setTags('');
-      fetchPosts();
+      fetchPosts(1);
     } catch (error) {
       console.error('Error inserting post:', error);
       alert('发布失败，请重试');
@@ -127,6 +135,88 @@ const Home: React.FC = () => {
   const pageTitle = "博客 | 我的应用";
   const pageDescription = "欢迎来到我的博客。这里有最新的文章发布，涵盖多个主题。登录后可以发布自己的博客文章。";
   const pageKeywords = "博客, 文章, 发布, 阅读, 分享";
+
+  const renderPagination = () => {
+    const maxVisiblePages = 5; // 最多显示的页码数
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    // 调整startPage，确保显示maxVisiblePages个页码
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    const pages = [];
+    
+    // 添加第一页
+    if (startPage > 1) {
+      pages.push(
+        <button
+          key={1}
+          onClick={() => handlePageChange(1)}
+          className="mx-1 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+        >
+          1
+        </button>
+      );
+      if (startPage > 2) {
+        pages.push(<span key="ellipsis1" className="mx-1">...</span>);
+      }
+    }
+
+    // 添加中间的页码
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`mx-1 px-3 py-1 rounded ${
+            currentPage === i
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-200 hover:bg-gray-300'
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    // 添加最后一页
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pages.push(<span key="ellipsis2" className="mx-1">...</span>);
+      }
+      pages.push(
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          className="mx-1 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
+    return (
+      <div className="flex justify-center items-center mt-6">
+        <button
+          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+          className="mx-1 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+        >
+          上一页
+        </button>
+        {pages}
+        <button
+          onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+          className="mx-1 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+        >
+          下一页
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -237,6 +327,7 @@ const Home: React.FC = () => {
               </article>
             ))}
           </div>
+          {renderPagination()}
         </main>
       )}
       <Footer />
