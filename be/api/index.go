@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -74,11 +75,18 @@ func init() {
 		num := c.DefaultQuery("num", "10")  // 默认获取10条记录
 		page := c.DefaultQuery("page", "1") // 默认获取第1页
 
+		// Convert string parameters to integers
+		numInt, _ := strconv.Atoi(num)
+		pageInt, _ := strconv.Atoi(page)
+
+		start := (pageInt - 1) * numInt
+		end := pageInt*numInt - 1
+
 		var articles []Article
 		_, err := supabaseClient.From("articles").
 			Select("id, title, subtitle, content, created_at, section", "", false).
 			Order("section", &postgrest.OrderOpts{Ascending: true}).
-			Range((page-1)*num, page*num-1).
+			Range(start, end, "").
 			ExecuteTo(&articles)
 
 		if err != nil {
@@ -87,16 +95,22 @@ func init() {
 			return
 		}
 
-		// Get total count
-		var count int64
-		err = supabaseClient.From("articles").Count(&count, "", nil)
+		// Get total count using Select count
+		var count struct {
+			Count int64 `json:"count"`
+		}
+		_, err = supabaseClient.From("articles").
+			Select("count", "", true).
+			Single().
+			ExecuteTo(&count)
+
 		if err != nil {
 			log.Printf("Error getting total count: %v", err)
 		}
 
 		c.JSON(http.StatusOK, gin.H{
 			"data":  articles,
-			"total": count,
+			"total": count.Count,
 			"error": nil,
 		})
 	})
@@ -106,11 +120,18 @@ func init() {
 		num := c.DefaultQuery("num", "10")  // 默认获取10条记录
 		page := c.DefaultQuery("page", "1") // 默认获取第1页
 
+		// Convert string parameters to integers
+		numInt, _ := strconv.Atoi(num)
+		pageInt, _ := strconv.Atoi(page)
+
+		start := (pageInt - 1) * numInt
+		end := pageInt*numInt - 1
+
 		var blogs []Blog
 		_, err := supabaseClient.From("blogs").
 			Select("*", "", false).
 			Order("created_at", &postgrest.OrderOpts{Ascending: false}).
-			Range((page-1)*num, page*num-1).
+			Range(start, end, "").
 			ExecuteTo(&blogs)
 
 		if err != nil {
@@ -119,16 +140,22 @@ func init() {
 			return
 		}
 
-		// Get total count
-		var count int64
-		err = supabaseClient.From("blogs").Count(&count, "", nil)
+		// Get total count using Select count
+		var count struct {
+			Count int64 `json:"count"`
+		}
+		_, err = supabaseClient.From("blogs").
+			Select("count", "", true).
+			Single().
+			ExecuteTo(&count)
+
 		if err != nil {
 			log.Printf("Error getting total count: %v", err)
 		}
 
 		c.JSON(http.StatusOK, gin.H{
 			"data":  blogs,
-			"total": count,
+			"total": count.Count,
 			"error": nil,
 		})
 	})
