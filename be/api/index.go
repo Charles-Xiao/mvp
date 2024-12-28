@@ -84,7 +84,7 @@ func init() {
 
 		var articles []Article
 		totalCount, err := supabaseClient.From("articles").
-			Select("id, title, subtitle, content, created_at, section", "", false).
+			Select("id, title, subtitle, content, created_at, section", "exact", false).
 			Order("section", &postgrest.OrderOpts{Ascending: true}).
 			Range(start, end, "").
 			ExecuteTo(&articles)
@@ -116,7 +116,7 @@ func init() {
 
 		var blogs []Blog
 		totalCount, err := supabaseClient.From("blogs").
-			Select("*", "exact", true).
+			Select("*", "exact", false).
 			Order("created_at", &postgrest.OrderOpts{Ascending: false}).
 			Range(start, end, "").
 			ExecuteTo(&blogs)
