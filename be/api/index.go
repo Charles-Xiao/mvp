@@ -97,9 +97,8 @@ func init() {
 
 		// Get total count
 		var count int64
-		var countResult *postgrest.QueryResponse
-		countResult, _, err = supabaseClient.From("articles").
-			Select("id", "exact", true).
+		countResult, _, err := supabaseClient.From("articles").
+			Select("id", "exact", false).
 			Execute()
 
 		if err != nil {
@@ -129,8 +128,8 @@ func init() {
 		end := pageInt*numInt - 1
 
 		var blogs []Blog
-		_, err := supabaseClient.From("blogs").
-			Select("*", "", false).
+		queryResult, err := supabaseClient.From("blogs").
+			Select("*", "exact", true).
 			Order("created_at", &postgrest.OrderOpts{Ascending: false}).
 			Range(start, end, "").
 			ExecuteTo(&blogs)
@@ -141,23 +140,9 @@ func init() {
 			return
 		}
 
-		// Get total count
-		var count int64
-		var countResult *postgrest.QueryResponse
-		countResult, _, err = supabaseClient.From("blogs").
-			Select("id", "exact", true).
-			Execute()
-
-		if err != nil {
-			log.Printf("Error getting total count: %v", err)
-			count = 0
-		} else {
-			count = countResult.Count
-		}
-
 		c.JSON(http.StatusOK, gin.H{
 			"data":  blogs,
-			"total": count,
+			"total": queryResult.Count,
 			"error": nil,
 		})
 	})
