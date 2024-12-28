@@ -69,41 +69,66 @@ func init() {
 		})
 	})
 
-	// url: https://mvp-be.vercel.app/articles
+	// url: https://mvp-be.vercel.app/articles?num=10&page=1
 	engine.GET("/articles", func(c *gin.Context) {
+		num := c.DefaultQuery("num", "10")  // 默认获取10条记录
+		page := c.DefaultQuery("page", "1") // 默认获取第1页
+
 		var articles []Article
 		_, err := supabaseClient.From("articles").
 			Select("id, title, subtitle, content, created_at, section", "", false).
 			Order("section", &postgrest.OrderOpts{Ascending: true}).
+			Range((page-1)*num, page*num-1).
 			ExecuteTo(&articles)
-		// log.Println(articles)
+
 		if err != nil {
-			log.Fatalf("Error fetching articles: %v", err)
+			log.Printf("Error fetching articles: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching articles"})
 			return
 		}
 
+		// Get total count
+		var count int64
+		err = supabaseClient.From("articles").Count(&count, "", nil)
+		if err != nil {
+			log.Printf("Error getting total count: %v", err)
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"data":  articles,
+			"total": count,
 			"error": nil,
 		})
 	})
 
-	// url: https://mvp-be.vercel.app/blogs
+	// url: https://mvp-be.vercel.app/blogs?num=10&page=1
 	engine.GET("/blogs", func(c *gin.Context) {
+		num := c.DefaultQuery("num", "10")  // 默认获取10条记录
+		page := c.DefaultQuery("page", "1") // 默认获取第1页
+
 		var blogs []Blog
 		_, err := supabaseClient.From("blogs").
 			Select("*", "", false).
 			Order("created_at", &postgrest.OrderOpts{Ascending: false}).
+			Range((page-1)*num, page*num-1).
 			ExecuteTo(&blogs)
+
 		if err != nil {
-			log.Fatalf("Error fetching blogs: %v", err)
+			log.Printf("Error fetching blogs: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching blogs"})
 			return
 		}
 
+		// Get total count
+		var count int64
+		err = supabaseClient.From("blogs").Count(&count, "", nil)
+		if err != nil {
+			log.Printf("Error getting total count: %v", err)
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"data":  blogs,
+			"total": count,
 			"error": nil,
 		})
 	})
