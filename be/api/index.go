@@ -100,9 +100,9 @@ func init() {
 			Count int64 `json:"count"`
 		}
 		_, err = supabaseClient.From("articles").
-			Select("count", "", true).
-			Single().
-			ExecuteTo(&count)
+			Select("id", "", false).
+			Count(&count.Count, "", nil).
+			Execute()
 
 		if err != nil {
 			log.Printf("Error getting total count: %v", err)
@@ -145,9 +145,9 @@ func init() {
 			Count int64 `json:"count"`
 		}
 		_, err = supabaseClient.From("blogs").
-			Select("count", "", true).
-			Single().
-			ExecuteTo(&count)
+			Select("id", "", false).
+			Count(&count.Count, "", nil).
+			Execute()
 
 		if err != nil {
 			log.Printf("Error getting total count: %v", err)
