@@ -97,7 +97,7 @@ func init() {
 
 		// Get total count
 		var count int64
-		countResult, err := supabaseClient.From("articles").
+		countResult, _, err := supabaseClient.From("articles").
 			Select("id", "exact", true).
 			Execute()
 
@@ -142,7 +142,7 @@ func init() {
 
 		// Get total count
 		var count int64
-		countResult, err := supabaseClient.From("blogs").
+		countResult, _, err := supabaseClient.From("blogs").
 			Select("id", "exact", true).
 			Execute()
 
