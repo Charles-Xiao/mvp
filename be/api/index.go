@@ -97,7 +97,8 @@ func init() {
 
 		// Get total count
 		var count int64
-		countResult, _, err := supabaseClient.From("articles").
+		var countResult *postgrest.QueryResponse
+		countResult, _, err = supabaseClient.From("articles").
 			Select("id", "exact", true).
 			Execute()
 
@@ -142,7 +143,8 @@ func init() {
 
 		// Get total count
 		var count int64
-		countResult, _, err := supabaseClient.From("blogs").
+		var countResult *postgrest.QueryResponse
+		countResult, _, err = supabaseClient.From("blogs").
 			Select("id", "exact", true).
 			Execute()
 
