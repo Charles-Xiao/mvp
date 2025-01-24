@@ -47,7 +47,7 @@ const PlyrVideo: React.FC<PlyrVideoProps> = ({
 }) => {
   return (
     <div className="flex justify-center items-center mt-12 mb-12">
-      <div className="w-1/2">
+      <div className="w-full md:w-1/2 px-4 md:px-0">
         <video className="w-full object-contain" controls crossOrigin="anonymous" playsInline poster={posterUrl}>
           {sources.map((source, index) => (
             <source
