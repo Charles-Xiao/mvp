@@ -5,6 +5,7 @@ import Banner from './components/banner';
 import Footer from './components/footer';
 import SwiperComponent from './components/swiper';
 import { Toaster } from "@/components/ui/sonner"
+import PlyrVideo from './components/plyrVideo';
 
 const Home: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const Home: React.FC = () => {
       <Toaster />
       <Banner />
       <SwiperComponent />
+      <PlyrVideo />
       <Footer />
     </div>
   );
