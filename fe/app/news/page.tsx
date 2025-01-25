@@ -9,6 +9,8 @@ import IndexTracker from '../components/IndexTracker';
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 
+import Player from 'next-video/player';
+
 const imageUrls = [
   "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80",
   "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80",
@@ -120,9 +122,23 @@ const Home: React.FC = () => {
 
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mt-24 mb-8 text-center">最新资讯</h1>
+
+        <div className="flex justify-center items-center">
+          <div className="w-full md:w-1/2 px-4">
+            <div className="rounded-lg overflow-hidden">
+              <Player
+                src="https://mvp-bkt.cdn.bcebos.com/public/%E5%87%A4%E5%87%B0%E4%B8%93%E8%AE%BF-%E6%AF%94%E7%89%B9%E5%B8%81%E6%8A%95%E8%B5%84%E9%9C%80%E8%A6%81%E4%BF%A1%E4%BB%B0%E5%92%8C%E8%A7%81%E8%AF%86.mp4"
+                poster="https://mvp-bkt.cdn.bcebos.com/public%2Fbtc-vs-gold.png"
+                blurDataURL="data:image/webp;base64,UklGRlA..."
+              />
+            </div>
+          </div>
+        </div>
+        
         <div className="container mx-auto px-4 py-8">
           <IndexTracker />
         </div>
+        
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
